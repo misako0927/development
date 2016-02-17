@@ -55,6 +55,7 @@ import org.oscm.internal.types.exception.ObjectNotFoundException;
 import org.oscm.internal.types.exception.OperationNotPermittedException;
 import org.oscm.internal.types.exception.SaaSApplicationException;
 import org.oscm.internal.types.exception.UserRoleAssignmentException;
+import org.oscm.internal.vo.VOService;
 import org.oscm.internal.vo.VOUser;
 import org.oscm.logging.Log4jLogger;
 import org.oscm.logging.LoggerFactory;
@@ -1140,6 +1141,30 @@ public class UserGroupServiceLocalBean {
         return userGroupDao.getUserGroupsForUserWithRoleWithoutDefault(userKey, userRoleKey);
     }
 
+    public void addVisibleServices() {
+        userGroupDao.addVisibleServices();
+    }
+
+    public void revokeVisibleServices() {
+        userGroupDao.revokeVisibleServices();
+    }
+
+    public void addAccessibleServices() {
+        userGroupDao.addAccessibleServices();
+    }
+
+    public void revokeAccessibleServices() {
+        userGroupDao.revokeAccessibleServices();
+    }
+
+    public List<VOService> getVisibleServices() {
+        return userGroupDao.getVisibleServices();
+    }
+
+    public List<VOService> getAccessibleServices() {
+        return userGroupDao.getAccessibleServices();
+    }
+
     public DataService getDm() {
         return dm;
     }
@@ -1209,4 +1234,5 @@ public class UserGroupServiceLocalBean {
     public void setTqs(TaskQueueServiceLocal tqs) {
         this.tqs = tqs;
     }
+
 }

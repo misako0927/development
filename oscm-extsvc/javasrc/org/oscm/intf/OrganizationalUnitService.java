@@ -25,6 +25,7 @@ import org.oscm.types.exceptions.NonUniqueBusinessKeyException;
 import org.oscm.types.exceptions.ObjectNotFoundException;
 import org.oscm.types.exceptions.OperationNotPermittedException;
 import org.oscm.vo.VOOrganizationalUnit;
+import org.oscm.vo.VOService;
 import org.oscm.vo.VOUser;
 
 /**
@@ -140,4 +141,89 @@ public interface OrganizationalUnitService {
             @WebParam(name = "organizationalUnitName") String organizationalUnitName)
             throws ObjectNotFoundException, OperationNotPermittedException,
             DeletionConstraintException, MailOperationException;
+
+    /**
+     * Adds visible services to the unit.
+     *
+     * @param unitName
+     *          - Name of the unit to which the services should be added
+     * @param services
+     *          - List of visible services to be added
+     */
+    @WebMethod
+    void addVisibleServices(
+            @WebParam(name = "unitName") String unitName,
+            @WebParam(name = "services") List<VOService> services);
+
+    /**
+     * Removes visible services from the unit.
+     *
+     * @param unitName
+     *          - Name of the unit from which the services should be revoked
+     * @param services
+     *          - List of visible services to be revoked
+     */
+    @WebMethod
+    void revokeVisibleServices(
+            @WebParam(name = "unitName") String unitName,
+            @WebParam(name = "services") List<VOService> services);
+
+
+    /**
+     * Adds accessible services to the unit.
+     *
+     * @param unitName
+     *          - Name of the unit to which the services should be added
+     * @param services
+     *          - List of accessible services to be added
+     */
+    @WebMethod
+    void addAccessibleServices(
+            @WebParam(name = "unitName") String unitName,
+            @WebParam(name = "services") List<VOService> services);
+
+    /**
+     * Removes accessible services from the unit.
+     *
+     * @param unitName
+     *          - Name of the unit from which the services should be revoked
+     * @param services
+     *          - List of accessible services to be revoked
+     */
+    @WebMethod
+    void revokeAccessibleeServices(
+            @WebParam(name = "unitName") String unitName,
+            @WebParam(name = "services") List<VOService> services);
+
+    /**
+     * Returns list of visible services.
+     *
+     * @param unitName
+     *          - Name of the unit from which we get the services
+     * @param pagination
+     *          - Sorting, filtering, paging details
+     * @return
+     *          - List of visible services
+     */
+    @WebMethod
+    List<VOService> getVisibleServices(
+            @WebParam(name = "unitName") String unitName,
+            @WebParam(name = "pagination") Pagination pagination);
+
+    /**
+     * Returns list of accessible services.
+     *
+     * @param unitName
+     *          - Name of the unit from which we get the services
+     * @param pagination
+     *          - Sorting, filtering, paging details
+     * @return
+     *          - List of accessible services
+     */
+    @WebMethod
+    List<VOService> getAccessibleServices (
+            @WebParam(name = "unitName") String unitName,
+            @WebParam(name="pagination)") Pagination pagination);
+
+
 }

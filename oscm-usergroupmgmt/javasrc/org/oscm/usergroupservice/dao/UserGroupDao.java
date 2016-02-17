@@ -18,6 +18,7 @@ import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import org.oscm.internal.vo.VOService;
 import org.oscm.logging.Log4jLogger;
 import org.oscm.logging.LoggerFactory;
 import org.oscm.paginator.Filter;
@@ -235,6 +236,29 @@ public class UserGroupDao {
             roleAssignmentByUserAndGroup.setUserGroupToUser(usgtu);
         }
         return roleAssignmentByUserAndGroup;
+    }
+
+    public List<VOService> getVisibleServices() {
+        return null;
+    }
+
+    public List<VOService> getAccessibleServices() {
+        return null;
+    }
+
+    public void addVisibleServices() {
+    }
+
+    public void revokeVisibleServices() {
+
+    }
+
+    public void addAccessibleServices() {
+
+    }
+
+    public void revokeAccessibleServices() {
+
     }
 
     private UserGroupToUser getUserGroupToUserOrNew(PlatformUser platformUser, UserGroup key) {

@@ -10,6 +10,7 @@ package org.oscm.webservices;
 
 import java.util.List;
 
+import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.xml.ws.WebServiceContext;
 
@@ -19,6 +20,7 @@ import org.oscm.dataservice.local.DataService;
 import org.oscm.domobjects.PlatformUser;
 import org.oscm.domobjects.UserGroup;
 import org.oscm.usergroupservice.bean.UserGroupServiceLocalBean;
+import org.oscm.vo.VOService;
 import org.oscm.webservices.logger.WebServiceLogger;
 import org.oscm.converter.api.Converter;
 import org.oscm.converter.api.EnumConverter;
@@ -151,5 +153,37 @@ public class OrganizationalUnitServiceWS implements OrganizationalUnitService {
         } catch (org.oscm.internal.types.exception.MailOperationException e) {
             throw ExceptionConverter.convertToApi(e);
         }
+    }
+
+    @Override
+    public void addVisibleServices(@WebParam(name = "unitName") String unitName, @WebParam(name = "services") List<VOService> services) {
+        localService.addVisibleServices();
+    }
+
+    @Override
+    public void revokeVisibleServices(@WebParam(name = "unitName") String unitName, @WebParam(name = "services") List<VOService> services) {
+        localService.revokeVisibleServices();
+    }
+
+    @Override
+    public void addAccessibleServices(@WebParam(name = "unitName") String unitName, @WebParam(name = "services") List<VOService> services) {
+        localService.addAccessibleServices();
+    }
+
+    @Override
+    public void revokeAccessibleeServices(@WebParam(name = "unitName") String unitName, @WebParam(name = "services") List<VOService> services) {
+        localService.revokeAccessibleServices();
+    }
+
+    @Override
+    public List<VOService> getVisibleServices(@WebParam(name = "unitName") String unitName, @WebParam(name = "pagination") Pagination pagination) {
+        localService.getVisibleServices();
+        return null;
+    }
+
+    @Override
+    public List<VOService> getAccessibleServices(@WebParam(name = "unitName") String unitName, @WebParam(name = "pagination)") Pagination pagination) {
+        localService.getAccessibleServices();
+        return null;
     }
 }
