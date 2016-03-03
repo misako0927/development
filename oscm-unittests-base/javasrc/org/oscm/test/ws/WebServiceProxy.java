@@ -9,11 +9,16 @@
 package org.oscm.test.ws;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Service;
+import javax.xml.ws.handler.Handler;
+import javax.xml.ws.handler.HandlerResolver;
+import javax.xml.ws.handler.PortInfo;
 
 import org.oscm.apiversioning.handler.ClientVersionHandler;
 
@@ -25,11 +30,11 @@ import com.sun.xml.wss.XWSSConstants;
  */
 public class WebServiceProxy {
 
-    public static <T> T get(String baseUrl, String version,
-            String auth, String namespace, Class<T> remoteInterface,
-            String userName, String password) throws Exception {
-        return get(baseUrl, version, version, auth, namespace,
-                remoteInterface, userName, password);
+    public static <T> T get(String baseUrl, String version, String auth,
+            String namespace, Class<T> remoteInterface, String userName,
+            String password) throws Exception {
+        return get(baseUrl, version, version, auth, namespace, remoteInterface,
+                userName, password);
     }
 
     public static <T> T get(String baseUrl, String versionWSDL,
@@ -44,6 +49,15 @@ public class WebServiceProxy {
         ClientVersionHandler versionHandler = new ClientVersionHandler(
                 versionHeader);
         service = versionHandler.addVersionInformationToClient(service);
+        service.setHandlerResolver(new HandlerResolver() {
+            @SuppressWarnings("rawtypes")
+            @Override
+            public List<Handler> getHandlerChain(PortInfo portInfo) {
+                List<Handler> handlerList = new ArrayList<Handler>();
+                handlerList.add(new NamespaceHandler());
+                return handlerList;
+            }
+        });
         T port = service.getPort(remoteInterface);
         BindingProvider bindingProvider = (BindingProvider) port;
         Map<String, Object> clientRequestContext = bindingProvider
