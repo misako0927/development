@@ -421,8 +421,6 @@ public class SubscriptionWizardConversation implements Serializable {
                 outcome = OUTCOME_PROCESS;
             } else {
                 status = rc.getStatus();
-                // TODO: fix that piece of code. Without it subs details won't
-                // work.
                 getSessionBean().setSelectedSubscriptionId(
                         rc.getSubscriptionId());
                 getSessionBean().setSelectedSubscriptionKey(rc.getKey());
@@ -622,10 +620,10 @@ public class SubscriptionWizardConversation implements Serializable {
     }
 
     public String previousFromPayment() {
+        model.setReadOnlyParams(false);
         return SubscriptionDetailsCtrlConstants.OUTCOME_PREVIOUS;
     }
 
-    // TODO: redirection doesn't work. Nicht funktionieren:)
     private void redirectToAccessDeniedPage() throws IllegalArgumentException,
             IOException {
         HttpServletRequest request = JSFUtils.getRequest();
