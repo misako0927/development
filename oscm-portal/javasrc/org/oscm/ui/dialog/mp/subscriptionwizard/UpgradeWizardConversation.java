@@ -1,7 +1,7 @@
 /*
  * ******************************************************************************
  *
- *  Copyright FUJITSU LIMITED 2015                            
+ *  Copyright FUJITSU LIMITED 2016
  *
  *   Creation Date: 27.01.15 10:07
  *
@@ -451,7 +451,7 @@ public class UpgradeWizardConversation implements Serializable {
                 return "";
             }
         }
-
+        model.setReadOnlyParams(true);
         if (svc != null && svc.getPriceModel().isChargeable()) {
             return OUTCOME_ENTER_PAYMENT;
         }
@@ -606,10 +606,12 @@ public class UpgradeWizardConversation implements Serializable {
      * Navigation section
      */
     public String next() {
+        model.setReadOnlyParams(true);
         return BaseBean.OUTCOME_SERVICE_SUBSCRIBE;
     }
 
     public String previous() {
+        model.setReadOnlyParams(false);
         return SubscriptionDetailsCtrlConstants.OUTCOME_PREVIOUS;
     }
 
@@ -618,10 +620,16 @@ public class UpgradeWizardConversation implements Serializable {
         if(model.getService().getPriceModel().isChargeable()) {
             resultNav = selectService();
         }
+        if (OUTCOME_SUCCESS.equals(resultNav)) {
+            conversation.end();
+        }
+
+        model.setReadOnlyParams(false);
         return resultNav;
     }
 
     public String gotoConfiguration() {
+        model.setReadOnlyParams(false);
         return OUTCOME_PREVIOUS;
     }
 

@@ -1,7 +1,7 @@
 /*
  * ******************************************************************************
  *
- *  Copyright FUJITSU LIMITED 2015                            
+ *  Copyright FUJITSU LIMITED 2016
  *
  *   Creation Date: 18.12.14 09:52
  *
@@ -134,7 +134,7 @@ public class SubscriptionWizardConversation implements Serializable {
     private PaymentAndBillingVisibleBean paymentAndBillingVisibleBean;
 
     /**
-     * Has to be found frou JSF context, rather than injected through CDI
+     * Has to be found through JSF context, rather than injected through CDI
      */
     private SessionBean sessionBean;
 
@@ -590,6 +590,7 @@ public class SubscriptionWizardConversation implements Serializable {
      * @return
      */
     public String next() {
+        model.setReadOnlyParams(true);
         return BaseBean.OUTCOME_SERVICE_SUBSCRIBE;
     }
 
@@ -599,6 +600,7 @@ public class SubscriptionWizardConversation implements Serializable {
     }
 
     public String previousFromPayment() {
+        model.setReadOnlyParams(false);
         return SubscriptionDetailsCtrlConstants.OUTCOME_PREVIOUS;
     }
 
