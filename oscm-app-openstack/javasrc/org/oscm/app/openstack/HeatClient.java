@@ -127,7 +127,7 @@ public class HeatClient {
         logger.debug("HeatClient.checkServerExists() Responsecode: "
                 + response.getResponseCode());
 
-        if (body.contains(stackName)) {
+        if (body.contains(serverId)) {
             return true;
         }
         return false;
@@ -152,8 +152,8 @@ public class HeatClient {
             JSONArray resources = responseJson.getJSONArray("resources");
             for (int i = 0; i < resources.length(); i++) {
                 JSONObject resource = resources.getJSONObject(i);
-                if ("Server".equalsIgnoreCase(resource
-                        .optString("resource_name"))) {
+                if ("OS::Nova::Server".equalsIgnoreCase(resource
+                        .optString("resource_type"))) {
                     return resource.optString("physical_resource_id");
                 }
             }

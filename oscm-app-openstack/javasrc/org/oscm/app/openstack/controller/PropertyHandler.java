@@ -49,6 +49,10 @@ public class PropertyHandler {
     // controller configuration)
     public static final String TENANT_NAME = "TENANT_NAME";
 
+    // Name (not id) of the domain (if omitted, it is taken from
+    // controller configuration)
+    public static final String DOMAIN_NAME = "DOMAIN_NAME";
+
     // URL of Heat template
     public static final String TEMPLATE_NAME = "TEMPLATE_NAME";
 
@@ -76,6 +80,10 @@ public class PropertyHandler {
      * or the status dispatcher.
      */
     public static final String STATUS = "STATUS";
+
+    // ID of the tenant/project (if omitted, it is taken from
+    // controller configuration)
+    public static final String TENANT_ID = "TENANT_ID";
 
     /**
      * Default constructor.
@@ -193,6 +201,22 @@ public class PropertyHandler {
         return tenant;
     }
 
+    /**
+     * Returns the domain name that defines the context for the provisioning. It
+     * can either be defined within the controller settings of as instance
+     * parameter. When present, the service parameter is preferred.
+     *
+     * @return the domain name
+     */
+    public String getDomainName() {
+        String domain = settings.getParameters().get(DOMAIN_NAME);
+        if (domain == null || domain.trim().length() == 0) {
+            domain = getValidatedProperty(settings.getConfigSettings(),
+                    DOMAIN_NAME);
+        }
+        return domain;
+    }
+
     public JSONObject getTemplateParameters() {
         JSONObject parameters = new JSONObject();
         Set<String> keySet = settings.getParameters().keySet();
@@ -289,6 +313,7 @@ public class PropertyHandler {
         details.append(getKeystoneUrl());
         details.append("\t\r\nTenantName: ");
         details.append(getTenantName());
+        details.append(getDomainName());
         details.append("\t\r\nTemplateUrl: ");
         details.append(getTemplateUrl());
         details.append("\t\r\nAccessInfoPattern: ");
@@ -324,5 +349,21 @@ public class PropertyHandler {
             locale = "en";
         }
         return locale;
+    }
+
+    /**
+     * Returns the tenant id that defines the context for the provisioning. It
+     * can either be defined within the controller settings of as instance
+     * parameter. When present, the service parameter is preferred.
+     *
+     * @return the tenant id
+     */
+    public String getTenantId() {
+        String tenant = settings.getParameters().get(TENANT_ID);
+        if (tenant == null || tenant.trim().length() == 0) {
+            tenant = getValidatedProperty(settings.getConfigSettings(),
+                    TENANT_ID);
+        }
+        return tenant;
     }
 }

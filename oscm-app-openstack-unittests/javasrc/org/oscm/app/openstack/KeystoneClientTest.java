@@ -1,18 +1,17 @@
 /*******************************************************************************
- *                                                                              
- *  Copyright FUJITSU LIMITED 2016                                        
- *                                                                              
- *  Creation Date: Dec 2, 2013                                                      
- *                                                                              
+ *
+ *  Copyright FUJITSU LIMITED 2016
+ *
+ *  Creation Date: Dec 2, 2013
+ *
  *******************************************************************************/
 
 package org.oscm.app.openstack;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
-
 import org.oscm.app.openstack.exceptions.HeatException;
 import org.oscm.app.v1_0.exceptions.APPlatformException;
 
@@ -31,7 +30,7 @@ public class KeystoneClientTest {
         // given
 
         // when
-        new KeystoneClient(new OpenStackConnection("xyz")).authenticate("user",
+        new KeystoneClient(new OpenStackConnection("xyz")).authenticateV2("user",
                 "password", "tenantName");
     }
 
@@ -41,7 +40,7 @@ public class KeystoneClientTest {
 
         // when
         new KeystoneClient(new OpenStackConnection("http://xyz.de"))
-                .authenticate("user", "password", "tenantName");
+                .authenticateV2("user", "password", "tenantName");
     }
 
     @Test
@@ -54,7 +53,7 @@ public class KeystoneClientTest {
         try {
             // when
             new KeystoneClient(new OpenStackConnection("http://xyz.de"))
-                    .authenticate("user", "password", "tenantName");
+                    .authenticateV2("user", "password", "tenantName");
             assertTrue("Test must fail at this point", false);
         } catch (RuntimeException ex) {
             // then
@@ -71,7 +70,7 @@ public class KeystoneClientTest {
 
         // when
         new KeystoneClient(new OpenStackConnection("http://xyz.de"))
-                .authenticate("user", "password", "tenantName");
+                .authenticateV2("user", "password", "tenantName");
     }
 
     @Test(expected = APPlatformException.class)
@@ -83,7 +82,7 @@ public class KeystoneClientTest {
 
         // when
         new KeystoneClient(new OpenStackConnection("http://xyz.de"))
-                .authenticate("user", "password", "tenantName");
+                .authenticateV2("user", "password", "tenantName");
     }
 
     @Test(expected = APPlatformException.class)
@@ -95,6 +94,6 @@ public class KeystoneClientTest {
 
         // when
         new KeystoneClient(new OpenStackConnection("http://xyz.de"))
-                .authenticate("user", "password", "tenantName");
+                .authenticateV2("user", "password", "tenantName");
     }
 }

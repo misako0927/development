@@ -1,9 +1,9 @@
 /*******************************************************************************
- *                                                                              
- *  Copyright FUJITSU LIMITED 2016                                        
- *                                                                              
- *  Creation Date: Dec 6, 2013                                                      
- *                                                                              
+ *
+ *  Copyright FUJITSU LIMITED 2016
+ *
+ *  Creation Date: Dec 6, 2013
+ *
  *******************************************************************************/
 
 package org.oscm.app.openstack;
@@ -18,9 +18,11 @@ import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLStreamHandler;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
 
 import org.oscm.app.openstack.controller.OpenStackStatus;
 import org.oscm.app.openstack.controller.PropertyHandler;
@@ -34,6 +36,8 @@ import org.oscm.app.openstack.proxy.ProxySettings;
 import org.oscm.app.v1_0.exceptions.APPlatformException;
 import org.oscm.app.v1_0.exceptions.AbortException;
 import org.oscm.app.v1_0.exceptions.InstanceNotAliveException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Make Heat API calls to create, update and delete stacks.
@@ -46,7 +50,7 @@ public class HeatProcessor {
 
     /**
      * Sets the URL stream handler. <b>Should only be used for unit testing!</b>
-     * 
+     *
      * @param streamHandler
      */
     public static void setURLStreamHandler(URLStreamHandler streamHandler) {
@@ -56,7 +60,7 @@ public class HeatProcessor {
     /**
      * Creates a stack. If the given stack name is not unique a random number
      * will be attached.
-     * 
+     *
      * @param ph
      *            contains all parameters for authentication and creating the
      *            stack
@@ -78,10 +82,13 @@ public class HeatProcessor {
         CreateStackRequest request = (CreateStackRequest) new CreateStackRequest(
                 ph.getStackName()).withTemplate(template).withParameters(
                 ph.getTemplateParameters());
+        logger.debug("request is "+ ph.getTemplateParameters());
+        logger.debug("heat processor pass 1");
         try {
             Stack created = heatClient.createStack(request);
             ph.setStackId(created.getId());
         } catch (HeatException ex) {
+            logger.debug(ex.getMessage());
             try {
                 ph.setStackId(getStackDetails(ph).getId());
             } catch (HeatException ex2) {
@@ -95,14 +102,22 @@ public class HeatProcessor {
         OpenStackConnection connection = new OpenStackConnection(
                 ph.getKeystoneUrl());
         KeystoneClient client = new KeystoneClient(connection);
-        client.authenticate(ph.getUserName(), ph.getPassword(),
-                ph.getTenantName());
+        String keystoneAPIVersion = connection.getKeystoneAPIVersion();
+        switch(keystoneAPIVersion){
+            case "v3":
+                client.authenticateV3(ph.getUserName(), ph.getPassword(),
+                        ph.getDomainName(), ph.getTenantId());
+                break;
+            default:
+                client.authenticateV2(ph.getUserName(), ph.getPassword(),
+                        ph.getTenantName());
+        }
         return new HeatClient(connection);
     }
 
     /**
      * Change an existing stack. The stack is identified by its name.
-     * 
+     *
      * @param ph
      * @throws HeatException
      */
@@ -197,6 +212,14 @@ public class HeatProcessor {
                     connection = (HttpURLConnection) url
                             .openConnection(Proxy.NO_PROXY);
                 }
+                if(url.getProtocol() == "https"){
+                	// TODO
+                	// This setting is only needed for K5.
+                	// We have to support multi protocols.
+                	SSLContext sslcontext = SSLContext.getInstance("TLSv1.2");
+                    sslcontext.init(null, null, null);
+                    ((HttpsURLConnection) connection).setSSLSocketFactory(sslcontext.getSocketFactory());
+                }
 
             }
 
@@ -204,13 +227,19 @@ public class HeatProcessor {
             throw new HeatException(
                     "Connection to Heat could not be created. Expected http(s) connection for URL: "
                             + restUri);
-        }
+        } catch (NoSuchAlgorithmException e) {
+			// TODO automatically created
+			throw new HeatException("NoSuchAlgorithmException occurred in SSLContext HeatProcessor");
+		} catch (KeyManagementException e) {
+			// TODO automatically created
+			throw new HeatException("KeyManagementException occurred in SSLContext HeatProcessor");
+		}
         return connection;
     }
 
     /**
      * Delete a stack. The stack is identified by its name.
-     * 
+     *
      * @param ph
      * @throws HeatException
      */

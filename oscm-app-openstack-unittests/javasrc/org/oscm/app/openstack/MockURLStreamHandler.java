@@ -1,9 +1,9 @@
 /*******************************************************************************
- *                                                                              
- *  Copyright FUJITSU LIMITED 2016                                             
- *                                                                              
- *  Creation Date: Jul 3, 2013                                                      
- *                                                                              
+ *
+ *  Copyright FUJITSU LIMITED 2016
+ *
+ *  Creation Date: Jul 3, 2013
+ *
  *******************************************************************************/
 
 package org.oscm.app.openstack;
@@ -20,12 +20,11 @@ import java.util.Map;
 import org.apache.sling.commons.json.JSONArray;
 import org.apache.sling.commons.json.JSONException;
 import org.apache.sling.commons.json.JSONObject;
-
 import org.oscm.app.openstack.controller.OpenStackStatus;
 
 /**
  * @author Dirk Bernsau
- * 
+ *
  */
 public class MockURLStreamHandler extends URLStreamHandler {
 
@@ -91,7 +90,6 @@ public class MockURLStreamHandler extends URLStreamHandler {
             }
 
             endpoints.put("type", KeystoneClient.TYPE_HEAT);
-            endpoints.put("name", KeystoneClient.NAME_HEAT);
             serviceCatalog.put(endpoints);
 
             JSONObject endpointsNova = new JSONObject();
@@ -105,7 +103,6 @@ public class MockURLStreamHandler extends URLStreamHandler {
             }
 
             endpointsNova.put("type", KeystoneClient.TYPE_NOVA);
-            endpointsNova.put("name", KeystoneClient.NAME_NOVA);
             serviceCatalog.put(endpointsNova);
 
             token.put("id", "authId");
