@@ -147,30 +147,19 @@ public class OpenStackConnection {
             logger.debug("Sending " + method + " request to " + restUri);
 
             connection.setRequestMethod(method);
-            logger.debug("OpenStackConnection process 4");
             if (authToken != null) {
                 connection.setRequestProperty("X-Auth-Token", authToken);
-                logger.debug("OpenStackConnection process 5: token is "+ authToken);
-
-                // Todo
-                // This is only need in pre K5 environment.
-                connection.setRequestProperty("X-Forwarded-Proto", "https");
             }
             connection.setReadTimeout(300000);
-            logger.debug("OpenStackConnection process 6");
 
             // add payload if present
             if (requestBody != null) {
-                logger.debug("OpenStackConnection process 7");
                 if (!requestBody.contains("password")) {
                     logger.debug("   request body:\n" + requestBody);
-                    logger.debug("OpenStackConnection process 8");
                 }
                 connection.setRequestProperty("Content-Type",
                         "application/json");
-                logger.debug("OpenStackConnection process 9");
                 connection.setDoOutput(true);
-                logger.debug("OpenStackConnection process 10");
                 out = new OutputStreamWriter(connection.getOutputStream());
                 out.write(requestBody);
                 out.close();
@@ -208,7 +197,6 @@ public class OpenStackConnection {
             }
             final String code = " (HTTP " + responseCode + ", URI " + restUri
                     + ", responseBody " + responseBody + "): " + e.getMessage();
-            logger.debug(code);
             switch (responseCode) {
             case 400:
                 throw new HeatException(
@@ -309,7 +297,6 @@ public class OpenStackConnection {
             	// TODO
             	// This setting is only needed for K5.
             	// We have to support multi protocols.
-            	logger.debug("https protocols TLSv1.2 use");
                 SSLContext sslcontext = SSLContext.getInstance("TLSv1.2");
                 sslcontext.init(null, null, null);
                 ((HttpsURLConnection) connection).setSSLSocketFactory(sslcontext.getSocketFactory());
@@ -321,10 +308,8 @@ public class OpenStackConnection {
                     "Connection to Heat could not be created. Expected http(s) connection for URL: "
                             + restUri);
         } catch (NoSuchAlgorithmException e) {
-			// TODO automatically created
 			throw new HeatException("NoSuchAlgorithmException occurred in SSLContext");
 		} catch (KeyManagementException e) {
-			// TODO automatically created
 			throw new HeatException("KeyManagementException occurred in SSLContext");
 		}
         return connection;

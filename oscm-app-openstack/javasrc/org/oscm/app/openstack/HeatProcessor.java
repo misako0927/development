@@ -82,13 +82,10 @@ public class HeatProcessor {
         CreateStackRequest request = (CreateStackRequest) new CreateStackRequest(
                 ph.getStackName()).withTemplate(template).withParameters(
                 ph.getTemplateParameters());
-        logger.debug("request is "+ ph.getTemplateParameters());
-        logger.debug("heat processor pass 1");
         try {
             Stack created = heatClient.createStack(request);
             ph.setStackId(created.getId());
         } catch (HeatException ex) {
-            logger.debug(ex.getMessage());
             try {
                 ph.setStackId(getStackDetails(ph).getId());
             } catch (HeatException ex2) {
@@ -228,10 +225,8 @@ public class HeatProcessor {
                     "Connection to Heat could not be created. Expected http(s) connection for URL: "
                             + restUri);
         } catch (NoSuchAlgorithmException e) {
-			// TODO automatically created
 			throw new HeatException("NoSuchAlgorithmException occurred in SSLContext HeatProcessor");
 		} catch (KeyManagementException e) {
-			// TODO automatically created
 			throw new HeatException("KeyManagementException occurred in SSLContext HeatProcessor");
 		}
         return connection;
