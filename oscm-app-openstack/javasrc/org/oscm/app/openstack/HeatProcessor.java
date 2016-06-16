@@ -212,7 +212,7 @@ public class HeatProcessor {
                     connection = (HttpURLConnection) url
                             .openConnection(Proxy.NO_PROXY);
                 }
-                if(url.getProtocol() == "https"){
+                if(url.getProtocol().equals("https")){
                 	// TODO
                 	// This setting is only needed for K5.
                 	// We have to support multi protocols.

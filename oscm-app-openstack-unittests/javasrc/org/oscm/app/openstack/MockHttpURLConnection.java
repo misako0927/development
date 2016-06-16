@@ -1,9 +1,9 @@
 /*******************************************************************************
- *                                                                              
- *  Copyright FUJITSU LIMITED 2016                                             
- *                                                                                                                                 
- *  Creation Date: 31.07.2014                                                      
- *                                                                              
+ *
+ *  Copyright FUJITSU LIMITED 2016
+ *
+ *  Creation Date: 31.07.2014
+ *
  *******************************************************************************/
 
 package org.oscm.app.openstack;
@@ -18,7 +18,7 @@ import java.net.URL;
 
 /**
  * @author afschar
- * 
+ *
  */
 public class MockHttpURLConnection extends HttpURLConnection {
     private String output;
@@ -89,6 +89,9 @@ public class MockHttpURLConnection extends HttpURLConnection {
     public String getHeaderField(String name) {
         if ("Location".equals(name)) {
             return locationHeader;
+        }
+        if (url != null && url.getProtocol() == "https" && "X-Subject-Token".equals(name) && url.getPath() == "/v3/auth"){
+        	return "authId";
         }
         return super.getHeaderField(name);
     }

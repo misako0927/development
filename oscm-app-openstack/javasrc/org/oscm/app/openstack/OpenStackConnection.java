@@ -122,7 +122,7 @@ public class OpenStackConnection {
     	if(keystoneEndpoint == ""){
     		return "";
     	}
-    	String regxp="*/v3/auth*";
+    	String regxp=".+/v3/auth.*";
     	boolean match = Pattern.matches(regxp, keystoneEndpoint);
     	if(match){
     		return "v3";
@@ -151,6 +151,10 @@ public class OpenStackConnection {
             if (authToken != null) {
                 connection.setRequestProperty("X-Auth-Token", authToken);
                 logger.debug("OpenStackConnection process 5: token is "+ authToken);
+
+                // Todo
+                // This is only need in pre K5 environment.
+                connection.setRequestProperty("X-Forwarded-Proto", "https");
             }
             connection.setReadTimeout(300000);
             logger.debug("OpenStackConnection process 6");
@@ -301,10 +305,11 @@ public class OpenStackConnection {
                 }
 
             }
-            if(url.getProtocol() == "https"){
+            if(url.getProtocol().equals("https")){
             	// TODO
             	// This setting is only needed for K5.
             	// We have to support multi protocols.
+            	logger.debug("https protocols TLSv1.2 use");
                 SSLContext sslcontext = SSLContext.getInstance("TLSv1.2");
                 sslcontext.init(null, null, null);
                 ((HttpsURLConnection) connection).setSSLSocketFactory(sslcontext.getSocketFactory());

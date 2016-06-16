@@ -1,24 +1,17 @@
 /*******************************************************************************
- *                                                                              
- *  Copyright FUJITSU LIMITED 2016                                        
- *       
+ *
+ *  Copyright FUJITSU LIMITED 2016
+ *
  *  Unit test.
- *       
- *  Creation Date: 2013-11-29                                                      
- *                                                                              
+ *
+ *  Creation Date: 2013-11-29
+ *
  *******************************************************************************/
 package org.oscm.app.openstack.controller;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -28,7 +21,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.MockitoAnnotations;
-
 import org.oscm.app.openstack.HeatProcessor;
 import org.oscm.app.openstack.MockHttpURLConnection;
 import org.oscm.app.openstack.MockURLStreamHandler;
@@ -46,7 +38,7 @@ import org.oscm.app.v1_0.intf.APPlatformService;
 
 /**
  * @author Dirk Bernsau
- * 
+ *
  */
 public class DispatcherTest {
 
@@ -76,6 +68,7 @@ public class DispatcherTest {
         configSettings.put(PropertyHandler.TENANT_NAME, "demo");
         configSettings.put(PropertyHandler.TEMPLATE_BASE_URL,
                 "http://estfarmaki2:8880/templates/");
+        configSettings.put(PropertyHandler.DOMAIN_NAME,"");
         settings = new ProvisioningSettings(parameters, configSettings, "en");
         settings.setSubscriptionId("subscriptionId");
         settings.getParameters().put(PropertyHandler.ACCESS_INFO_PATTERN,

@@ -1,20 +1,18 @@
 /*******************************************************************************
- *                                                                              
- *  Copyright FUJITSU LIMITED 2016                                        
- *                                                                              
- *  Creation Date: 03.06.2014                                                      
- *                                                                              
+ *
+ *  Copyright FUJITSU LIMITED 2016
+ *
+ *  Creation Date: 03.06.2014
+ *
  *******************************************************************************/
 
 package org.oscm.app.openstack.controller;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
 import org.junit.Test;
-
 import org.oscm.app.common.intf.ControllerAccessTest;
 import org.oscm.app.openstack.i18n.Messages;
 
@@ -37,7 +35,7 @@ public class OpenStackControllerAccessTest extends ControllerAccessTest {
         List<String> controllerParameterKeys = new OpenStackControllerAccess()
                 .getControllerParameterKeys();
         assertNotNull(controllerParameterKeys);
-        assertEquals(5, controllerParameterKeys.size());
+        assertEquals(6, controllerParameterKeys.size());
     }
 
     @Test
