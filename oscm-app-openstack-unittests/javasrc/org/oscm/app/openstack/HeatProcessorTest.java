@@ -19,6 +19,7 @@ import org.oscm.app.openstack.controller.PropertyHandler;
 import org.oscm.app.openstack.data.Stack;
 import org.oscm.app.openstack.exceptions.HeatException;
 import org.oscm.app.v1_0.data.ProvisioningSettings;
+import org.oscm.app.v1_0.exceptions.AbortException;
 import org.oscm.app.v1_0.exceptions.InstanceNotAliveException;
 
 /**
@@ -61,6 +62,32 @@ public class HeatProcessorTest {
         // given
         final String instanceName = "Instance4";
         createBasicParameters(instanceName, "fosi_v2.json", "v3");
+
+        // when
+        new HeatProcessor().createStack(paramHandler);
+
+        // then
+        assertEquals("idValue", paramHandler.getStackId());
+        assertTrue(paramHandler.getStackName().startsWith(instanceName));
+    }
+
+    @Test(expected = AbortException.class)
+    public void createStack_v3_notTemplate()
+            throws Exception {
+        // given
+        final String instanceName = "Instance4";
+        createBasicParameters(instanceName, "fosi_v2.json", "v3");
+        configSettings.put(PropertyHandler.TEMPLATE_BASE_URL, "estfarmaki2:8880/templates/");
+        // when
+        new HeatProcessor().createStack(paramHandler);
+    }
+
+    @Test
+    public void createStack_v3_withHttpsTemplate() throws Exception {
+        // given
+        final String instanceName = "Instance4";
+        createBasicParameters(instanceName, "fosi_v2.json", "v3");
+        configSettings.put(PropertyHandler.TEMPLATE_BASE_URL, "https://objectstorage/v1/templates/");
 
         // when
         new HeatProcessor().createStack(paramHandler);

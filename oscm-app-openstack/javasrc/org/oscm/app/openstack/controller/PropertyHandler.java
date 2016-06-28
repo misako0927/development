@@ -14,6 +14,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.sling.commons.json.JSONException;
 import org.apache.sling.commons.json.JSONObject;
@@ -301,6 +302,7 @@ public class PropertyHandler {
 
     public String getStackConfigurationAsString() throws HeatException {
         StringBuffer details = new StringBuffer();
+        String keystoneAPIVersion = getKeystoneAPIVersion();
         details.append("\t\r\nStackName: ");
         details.append(getStackName());
         details.append("\t\r\nStackId: ");
@@ -309,10 +311,14 @@ public class PropertyHandler {
         details.append(getUserName());
         details.append("\t\r\nKeystoneAPIUrl: ");
         details.append(getKeystoneUrl());
-        details.append("\t\r\nTenantName: ");
-        details.append(getTenantName());
-        details.append("\t\r\nDomainName: ");
-        details.append(getDomainName());
+        switch(keystoneAPIVersion){
+            case "v3":
+        	    details.append("\t\r\nDomainName: ");
+                details.append(getDomainName());
+            default:
+            	details.append("\t\r\nTenantName: ");
+                details.append(getTenantName());
+        }
         details.append("\t\r\nTemplateUrl: ");
         details.append(getTemplateUrl());
         details.append("\t\r\nAccessInfoPattern: ");
@@ -356,5 +362,20 @@ public class PropertyHandler {
      */
     public String getTenantId() {
         return settings.getParameters().get(TENANT_ID);
+    }
+
+    /**
+     * Return keystone API version
+     * @return the keystone API version
+     */
+    public String getKeystoneAPIVersion(){
+    	String keystoneEndpoint = getKeystoneUrl();
+    	String regxp=".+/v3/auth.*";
+    	boolean match = Pattern.matches(regxp, keystoneEndpoint);
+    	if(match){
+    		return "v3";
+    	} else {
+    		return "v2";
+    	}
     }
 }

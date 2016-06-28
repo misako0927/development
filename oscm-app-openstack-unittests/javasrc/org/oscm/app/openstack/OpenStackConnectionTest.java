@@ -323,4 +323,6 @@ public class OpenStackConnectionTest {
             assertTrue(ex.getMessage().indexOf(msg) > -1);
         }
     }
+
+
 }

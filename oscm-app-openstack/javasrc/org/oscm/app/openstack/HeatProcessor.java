@@ -99,7 +99,7 @@ public class HeatProcessor {
         OpenStackConnection connection = new OpenStackConnection(
                 ph.getKeystoneUrl());
         KeystoneClient client = new KeystoneClient(connection);
-        String keystoneAPIVersion = connection.getKeystoneAPIVersion();
+        String keystoneAPIVersion = ph.getKeystoneAPIVersion();
         switch(keystoneAPIVersion){
             case "v3":
                 client.authenticateV3(ph.getUserName(), ph.getPassword(),

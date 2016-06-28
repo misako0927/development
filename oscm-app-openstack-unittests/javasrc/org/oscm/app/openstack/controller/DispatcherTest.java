@@ -23,6 +23,7 @@ import org.mockito.Captor;
 import org.mockito.MockitoAnnotations;
 import org.oscm.app.openstack.HeatProcessor;
 import org.oscm.app.openstack.MockHttpURLConnection;
+import org.oscm.app.openstack.MockHttpsURLConnection;
 import org.oscm.app.openstack.MockURLStreamHandler;
 import org.oscm.app.openstack.OpenStackConnection;
 import org.oscm.app.openstack.data.FlowState;
@@ -68,7 +69,6 @@ public class DispatcherTest {
         configSettings.put(PropertyHandler.TENANT_NAME, "demo");
         configSettings.put(PropertyHandler.TEMPLATE_BASE_URL,
                 "http://estfarmaki2:8880/templates/");
-        configSettings.put(PropertyHandler.DOMAIN_NAME,"");
         settings = new ProvisioningSettings(parameters, configSettings, "en");
         settings.setSubscriptionId("subscriptionId");
         settings.getParameters().put(PropertyHandler.ACCESS_INFO_PATTERN,
@@ -266,6 +266,33 @@ public class DispatcherTest {
     }
 
     @Test
+    public void creating_sendMail_v3() throws Exception {
+        // given
+        configSettings.put(PropertyHandler.KEYSTONE_API_URL,
+                "https://keystone:8080/v3/auth");
+        configSettings.put(PropertyHandler.DOMAIN_NAME,"domain1");
+        parameters.put(PropertyHandler.MAIL_FOR_COMPLETION, "test@mail.com");
+        paramHandler.setState(FlowState.CREATING_STACK);
+        streamHandler.put(
+                "/stacks/Instance4",
+                new MockHttpsURLConnection(200, MockURLStreamHandler
+                        .respStacksInstanceName(
+                                OpenStackStatus.CREATE_COMPLETE, true)));
+        doReturn("test").when(platformService).getEventServiceUrl();
+        // when
+        InstanceStatus result = dispatcher.dispatch();
+
+        // then
+        String status = parameters.get(PropertyHandler.STATUS);
+        assertEquals(FlowState.MANUAL.toString(), status);
+        assertFalse(result.isReady());
+        assertFalse(result.getRunWithTimer());
+        assertTrue(subject.getValue().contains("subscriptionId"));
+        assertTrue(text.getValue().contains("subscriptionId"));
+        assertTrue(text.getValue().contains("domain1"));
+    }
+
+    @Test
     public void updating() throws Exception {
         // given
         paramHandler.setState(FlowState.UPDATING);
@@ -283,6 +310,31 @@ public class DispatcherTest {
         assertEquals(FlowState.FINISHED.toString(), status);
         assertEquals(ACCESS_INFO, result.getAccessInfo());
         assertTrue(result.isReady());
+    }
+
+    @Test
+    public void updating_v3() throws Exception {
+        // given
+        parameters.put(PropertyHandler.MAIL_FOR_COMPLETION, "test@mail.com");
+        configSettings.put(PropertyHandler.KEYSTONE_API_URL,
+                "https://keystone:8080/v3/auth");
+        configSettings.put(PropertyHandler.DOMAIN_NAME,"domain1");
+        paramHandler.setState(FlowState.UPDATING);
+        streamHandler.put(
+                "/stacks/Instance4",
+                new MockHttpsURLConnection(200, MockURLStreamHandler
+                        .respStacksInstanceName(
+                                OpenStackStatus.UPDATE_COMPLETE, true)));
+
+        // when
+        InstanceStatus result = dispatcher.dispatch();
+
+        // then
+        String status = parameters.get(PropertyHandler.STATUS);
+        assertEquals(FlowState.FINISHED.toString(), status);
+        assertEquals(ACCESS_INFO, result.getAccessInfo());
+        assertTrue(result.isReady());
+        assertTrue(text.getValue().contains("domain1"));
     }
 
     @Test

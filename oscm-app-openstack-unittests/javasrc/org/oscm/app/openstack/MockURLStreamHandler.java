@@ -53,9 +53,22 @@ public class MockURLStreamHandler extends URLStreamHandler {
                 respTemplatesFosi_v2_changeType()));
         connectionHttps = new HashMap<String, MockHttpsURLConnection>();
         put("/v3/auth/tokens", new MockHttpsURLConnection(201, respTokens_v3(true, true)));
+        put("/v1/templates/fosi_v2.json", new MockHttpsURLConnection(200,
+        		respTemplatesFosi_v2()));
+        put("/stacks/instanceName", new MockHttpsURLConnection(200,
+                respStacksInstanceName(OpenStackStatus.CREATE_COMPLETE, true)));
+        put("/stacks/Instance4", new MockHttpsURLConnection(200,
+                respStacksInstanceName(OpenStackStatus.CREATE_COMPLETE, true)));
+        put("/stacks/Instance4/resources", new MockHttpsURLConnection(200,
+                respStacksResources(true, "serverId", "AWS::EC2::Instance")));
+        put("/servers/serverId", new MockHttpsURLConnection(200,
+                respServer("Instance4", "serverId")));
+        put("/stacks/Instance4/sID/actions", new MockHttpsURLConnection(200,
+                respStacksInstance4sIdActions()));
+        put("/stacks", new MockHttpsURLConnection(200, respStacks()));
     }
 
-    private void put(String url, MockHttpsURLConnection mock) {
+    public void put(String url, MockHttpsURLConnection mock) {
         connectionHttps.put(url, mock);
 	}
 

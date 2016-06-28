@@ -21,7 +21,6 @@ import java.net.URL;
 import java.net.URLStreamHandler;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.util.regex.Pattern;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -112,23 +111,6 @@ public class OpenStackConnection {
      */
     public String getKeystoneEndpoint() {
         return keystoneEndpoint;
-    }
-
-    /***
-     *
-     * @return The API version of Keystone.
-     */
-    public String getKeystoneAPIVersion(){
-    	if(keystoneEndpoint == ""){
-    		return "";
-    	}
-    	String regxp=".+/v3/auth.*";
-    	boolean match = Pattern.matches(regxp, keystoneEndpoint);
-    	if(match){
-    		return "v3";
-    	} else {
-    		return "v2";
-    	}
     }
 
     public RESTResponse processRequest(String restUri, String method)

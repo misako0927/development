@@ -90,9 +90,6 @@ public class MockHttpURLConnection extends HttpURLConnection {
         if ("Location".equals(name)) {
             return locationHeader;
         }
-        if (url != null && url.getProtocol() == "https" && "X-Subject-Token".equals(name) && url.getPath() == "/v3/auth"){
-        	return "authId";
-        }
         return super.getHeaderField(name);
     }
 
